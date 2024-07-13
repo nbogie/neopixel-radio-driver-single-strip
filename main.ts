@@ -16,6 +16,17 @@ input.onPinPressed(TouchPin.P2, () => {
     strip1.clear();
 })
 
+function runSliderAnimation(numFrames:number){
+    strip1.clear();
+    strip1.setPixelColor(0, neopixel.hsl(p1Hue, 99, 50));
+    for (let i = 0; i < numFrames; i++){
+        strip1.rotate(1);
+        strip1.show();
+        basic.pause(2);
+    }
+    strip1.clear();
+}
+
 function pulseRedAmberGreenTrafficLights() {
     strip1.setBrightness(defaultBrightness)
     trafficLightColour = NeoPixelColors.Red
@@ -26,9 +37,12 @@ function pulseRedAmberGreenTrafficLights() {
     basic.pause(1000)
     trafficLightColour = NeoPixelColors.Green
     pulseTrafficLight()
+    basic.pause(1000)
+    strip1.clear();
 }
 
 input.onGesture(Gesture.Shake, () => {
+    radio.sendNumber(258);
 })
 
 function cycleP1Hue() {
@@ -39,15 +53,13 @@ function cycleP1Hue() {
 }
 
 input.onButtonPressed(Button.A, () => {
-    showBarUpTo(60);
+    showBarUpTo(50);
     basic.pause(500);
     showBarUpTo(0);
 })
 
 input.onButtonPressed(Button.B, () => {
-    showBarUpTo(100);
-    basic.pause(500);
-    showBarUpTo(0);
+    runSliderAnimation(500);
 })
 
 function showBarUpTo(num: number) {
@@ -74,11 +86,9 @@ radio.onDataPacketReceived(({ receivedNumber }) => {
         // strip1.showRainbow();   
         showBarUpTo(receivedNumber);
     } else if (receivedNumber == 256) {
-        //nop
+        runSliderAnimation(1000);
     } else if (receivedNumber == 257) {
-        pulseRedAmberGreenTrafficLights()
-        basic.pause(1000)
-        strip1.clear();
+        pulseRedAmberGreenTrafficLights()        
     } else if (receivedNumber == 258) {
         strip1.showRainbow();
     } else if (receivedNumber >= 360) {
@@ -106,7 +116,7 @@ radio.sendNumber(0)
 strip1.setPixelColor(p1Pos, p1Colour)
 strip1.show()
 basic.pause(500)
-basic.showString("npbar ch21", 50)
+basic.showString("np:21", 50)
 basic.forever(() => {
     basic.pause(100)
 })
